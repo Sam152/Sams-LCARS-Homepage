@@ -373,19 +373,19 @@ $(document).ready(function(){
 			((federation.parent().height() / 2) - (federation.height() / 2)) + 'px'
 		);
 		
-		//Hide the federation symbold
+		//Hide the federation symbol
 		function hideFederation(){
-			federation.fadeOut(1000, function(){
+			federation.fadeOut(3000, function(){
 				federation.remove();
-				wrapper.fadeIn();
+				wrapper.fadeIn(500);
 				$(window).trigger('resize');
 			});
 		}
 		
-		setTimeout(hideFederation, 1000);
+		$(window).load(function(){
+			setTimeout(hideFederation, 1000);
+		});
 		
-		
-	
 	})();
 
 });
