@@ -72,34 +72,50 @@ $(document).ready(function(){
 	})();
 	
 	
+	//Do all the sound stuff
 	(function(){
-		
-		//The number of options to cycle
-		var numberOfOptions = 3;	
-			
-		//The sound of this UI click
-		var volume = 10;
-		
-		//Keep track of sound we are up to
-		var upTo = 0;
-
-		//When certain elements are clicked
-		$('#bottom-section > div, #top-section > div').click(function(){
-			//Play the correct sound
-			switch(upTo){
-				case 0:
-					sound.play('Computer - Beep', volume);
-					break;
-				case 1:
-					sound.play('Computer sound 44', volume);
-					break;
-				case 2:
-					sound.play('Computer thinking-short', volume);
-					break;
+	
+		//Define a data structure that maps an element, event, volume and list of sounds
+		var sounds = [
+			{
+				element : '#top-section > div, #bottom-section > div',
+				volume : 10,
+				event : 'click',
+				sounds : [
+					'Computer thinking-short',
+					'Computer - Beep'
+				],
+			},
+			{
+				element : 'a',
+				volume : 20,
+				event : 'click',
+				sounds : [
+					'Computer sound 44'
+				]
 			}
+		];
+
+
+		//sound.play('Computer thinking-short', volume);
+		
+		$.each(sounds, function(index, sound){
 			
-			upTo++;
-			upTo %= numberOfOptions;
+			//Bind to the click event
+			$(sound.element).bind(sound.event, function(){
+				//Cycle the sounds				
+				if(typeof sound.upTo == 'undefined'){
+					sound.upTo = 0;
+				}else{
+					sound.upTo++;
+					sound.upTo %= sound.sounds.length;
+				}
+				//Get the sound to play
+				var soundToPlay = sound.sounds[sound.upTo];
+
+				//Play the sound
+				audio.play(soundToPlay, sound.volume);
+			});
 		});
 	})();
 	
@@ -118,17 +134,17 @@ $(document).ready(function(){
 		//Define a data structure for pulsing elements
 		var animations = [
 			{
-				element : '#panel-top',
+				element : '#panel-top-square-1',
 				property : 'backgroundColor',
 				colors : [
-					'#8B88EE',
-					'#7B78DE'
+					'#C498C4',
+					'#ab75ab'
 				]
 			}
 		];
 	
 		//Define a duration for the pulse
-		var pulseDuration = 3000;
+		var pulseDuration = 1000;
 	
 		//A simple helper to animate an element
 		function animateTo(element, inColor, cssAnimateProperty){
@@ -164,10 +180,34 @@ $(document).ready(function(){
 			});
 		}
 		
+		//Run the shift immediately
+		runColorShift();
+
 		//Run the animation shift every pulse duration
 		setInterval(runColorShift, pulseDuration);
 
 	})();
+	
+	
+	//Enable scrolling in the main content region
+	(function(){
+		
+		var options = {
+			verticalDragMaxHeight : 20,
+			animateScroll: true
+		};
+		
+		//Run the jQuery plugin
+		function contentScrollbars(){
+			jQuery('#bottom-section-content').jScrollPane(options);
+		}
+		
+		//Run it when the page load
+		contentScrollbars();
+		
+		//Fix the bars when the window resizes
+		$(window).bind('load resize',contentScrollbars);
 
+	})();
 
 });

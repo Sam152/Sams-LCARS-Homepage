@@ -38,4 +38,4 @@ function soundManager(inVolume){
 }
 
 //Create a new sound object for the rest of our application
-var sound = new soundManager(10);
+var audio = new soundManager(10);
