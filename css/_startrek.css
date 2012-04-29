@@ -39,6 +39,7 @@ a{
 	top: 0;
 	left: 0;
 	margin:40px 40px 40px 200px;
+	min-width: 700px;
 }
 
 #top-section{
@@ -54,6 +55,7 @@ a{
 #bottom-section-content{
 	margin-top: 65px;
 	color:#fe9800;
+	outline: none;
 }
 
 #top-section-content h1{
@@ -70,7 +72,7 @@ a{
 #profile-buttons{
 	float: left;
 	width: 310px;
-	margin: 80px 0 0 34px;
+	margin: 7px 0 0 24px;
 }
 
 #profile-buttons a{
@@ -112,7 +114,7 @@ a{
 #service-record{
 	width: 210px;
 	font-size: 13px;
-	margin-top: 17px;
+	margin-top: 10px;
 	font-family: Arial;
 	margin-left: -4px;
 }
@@ -161,6 +163,7 @@ a{
 .panel-long-inner{
 	width: 100%;
 	position:relative;
+	overflow:visible!important;
 }
 
 .panel-long-inner div{
@@ -222,6 +225,8 @@ a{
 	background-color: #cc6061;
 	margin-left: 2px;
 	margin-top: 6px;
+	text-align:right;
+	padding: 5px 6px 0 0;
 }
 
 #panel-bottom-square-2{
@@ -242,8 +247,34 @@ a{
 	background-color: #ffa873;
 	margin-left: 2px;
 	margin-top: 5px;
+	text-align:right;
+	padding:5px 6px 0 0;
 }
 
 #panel-bottom-square-3:active{
 	background-color:#EF9863;
+}
+
+.jspDrag{
+	background-color:#ab75ab;
+	border-radius:20px;
+}
+
+.jspTrack,
+.jspVerticalBar{
+	background-color:transparent;
+	cursor:pointer;
+}
+
+.jspTrack{
+	background-image:url(../img/scroll-bar.png);
+	background-repeat:repeat-y;
+	background-position:center;
+}
+
+#federation{
+	width: 668px;
+	height: 400px;
+	background-image:url(../img/federation.jpg);
+	margin:auto;
 }

@@ -1,0 +1,6 @@
+ - Have row of numbers
+  - Numbers are highlighted by row. The highlighted row moves down.
+  - Quicksand removes, adds numbers.
+  - Numbers respond to clicks, and are dynamic, certain numbers do different things based on clicks
+  
+ - Slider handle to get design upgrade

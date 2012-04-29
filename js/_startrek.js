@@ -61,7 +61,7 @@ $(document).ready(function(){
 			//Add it to the UI
 			$('#panel-bottom').html(unixTime);
 			
-			var nextTimeout = Math.floor(Math.random() * 4000);
+			var nextTimeout = Math.floor(Math.random() * 2000);
 			
 			//Update the time at a random time
 			setTimeout(setTime, nextTimeout);
@@ -71,6 +71,139 @@ $(document).ready(function(){
 		setTime();
 	})();
 	
+	//Put a number animation in the panel
+	(function(){
+
+		//Set up some parameters of the animation
+		var animationNumber = -17;
+		var animationOffset = 16;
+		var animationSpeed = 6000;
+
+		//The previous animated number		
+		var previousValue = 0;
+
+		//This ended up way more complicated than it should have been, refactor
+		function animateNumbers(){
+
+			//Animate in the opposite direction each call
+			animationNumber *= -1;
+
+			//Called when the animate number changes
+			function numberChange(now, fx){
+				
+				//Round the tick number
+				now = Math.floor(now);
+				
+				//Reset the previous counter
+				if(previousValue == -1 * animationNumber){
+					previousValue = 0;
+				}
+
+				//Get the panel we are putting the number into
+				var panel = $('#panel-bottom-square-1');
+				
+				//If the panel is empty populate it
+				if(panel.html().trim() == ''){
+					panel.html(animationOffset);
+				}else{
+			
+					//Otherwise populate it with some values
+					var number = parseInt(
+						panel.html()
+							.replace('EAX, ','')
+							.replace('H','')
+					);
+			
+					var panelValue = number  + now - previousValue;
+					panel.html('EAX, '+panelValue + 'H');
+				}
+
+				//Maintain a previous value
+				previousValue = now;
+			}
+
+			//I'm sure there are better ways to do this		
+			$('#panel-bottom-square-1').animate(
+				{	
+					//Set a random CSS property we can hook into
+					left : animationNumber,
+				},
+				{
+					step: numberChange,
+					duration: animationSpeed,
+					complete: animateNumbers
+				}
+			);
+		}
+		
+		//Call the function when the page loads
+		animateNumbers();
+
+	})();
+	
+	
+	//Populate the last panel with some numbers
+	(function(){
+	
+		$('#panel-bottom-square-3').html('UIMMD-99');
+		$(document).mousemove(function(e){
+			var displayNumber = (Math.ceil((e.pageX + e.pageY) / 120));
+			$('#panel-bottom-square-3').html('UIMMD-' + displayNumber);			
+		});
+	})();
+	
+	//Make the initial panel slide out nicely
+	(function(){
+		
+		//Set the width timeline
+		var initialWidth = 100;
+		var firstAnimation = 90;
+		var secondAnimation = 100;
+		
+		//Set the animation speeds
+		var firstAnimationSpeed = 50;
+		var secondAnimationSpeed = 500;
+	
+		//Get the target element of the transform
+		var targetElement = $('.panel-long-inner');
+		
+		//Shorten the width
+		targetElement.css('width',initialWidth+'%');
+		
+		//Create a function to restore the width
+		function runAnimations(){
+			targetElement.animate(
+				{
+					width : firstAnimation+'%'
+				},
+				{
+					duration: firstAnimationSpeed,
+					complete: function(){
+						targetElement.animate(
+							{
+								width: secondAnimation+'%'
+							},
+							{
+								duration: secondAnimationSpeed
+							}
+						);
+					}
+				}
+			);
+		}
+		
+		$('#panel-top').mousedown(function(){
+			targetElement = $('.panel-long-inner:eq(0)');
+			runAnimations();
+		});
+
+		$('#panel-bottom').mousedown(function(){
+			targetElement = $('.panel-long-inner:eq(1)');
+			runAnimations();
+		});
+	
+	})();
+	
 	
 	//Do all the sound stuff
 	(function(){
@@ -78,18 +211,25 @@ $(document).ready(function(){
 		//Define a data structure that maps an element, event, volume and list of sounds
 		var sounds = [
 			{
-				element : '#top-section > div, #bottom-section > div',
+				element : '#panel-bottom, #panel-top',
 				volume : 10,
-				event : 'click',
+				event : 'mousedown',
 				sounds : [
-					'Computer thinking-short',
 					'Computer - Beep'
+				],
+			},
+			{
+				element : '#bottom-panels > div',
+				volume : 5,
+				event : 'mousedown',
+				sounds : [
+					'Computer thinking-short'
 				],
 			},
 			{
 				element : 'a',
 				volume : 20,
-				event : 'click',
+				event : 'mousedown',
 				sounds : [
 					'Computer sound 44'
 				]
@@ -193,7 +333,7 @@ $(document).ready(function(){
 	(function(){
 		
 		var options = {
-			verticalDragMaxHeight : 20,
+			verticalDragMaxHeight : 16,
 			animateScroll: true
 		};
 		
@@ -208,6 +348,44 @@ $(document).ready(function(){
 		//Fix the bars when the window resizes
 		$(window).bind('load resize',contentScrollbars);
 
+	})();
+	
+	
+	//Create a nice federation opening screen
+	(function(){
+		
+		//The content div
+		var content = $('#bottom-section-content');
+		
+		//Wrap the body content in a tempory div to hide stuff
+		var wrapper = content
+			.wrapInner('<div class="body-content"></div>')
+			.find('.body-content');
+
+		//Hide the main content
+		wrapper.hide();
+		
+		//Add the federation div after the wrapper
+		var federation = wrapper.after('<div id="federation"></div>').siblings('#federation');
+		
+		federation.css(
+			'margin-top',
+			((federation.parent().height() / 2) - (federation.height() / 2)) + 'px'
+		);
+		
+		//Hide the federation symbold
+		function hideFederation(){
+			federation.fadeOut(1000, function(){
+				federation.remove();
+				wrapper.fadeIn();
+				$(window).trigger('resize');
+			});
+		}
+		
+		setTimeout(hideFederation, 1000);
+		
+		
+	
 	})();
 
 });
