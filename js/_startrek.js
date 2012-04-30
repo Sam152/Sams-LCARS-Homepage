@@ -424,6 +424,10 @@ $(document).ready(function(){
 					//Add some classes for styling
 					element.addClass('col-' + n);
 					element.addClass('row-' + i);
+					
+					//Add them in data format
+					element.attr('data-col', n);
+					element.attr('data-row', i);
 				
 					//Make them float the correct distance
 					element.css('width',(100 / cols) + '%');
@@ -539,11 +543,13 @@ $(document).ready(function(){
 				setTimeout(runNumberUpdates,updateFrequency);
 			}
 			
+			//Run the updates now
 			runNumberUpdates();
 		})();
 		
-		(function(){
-			
+		
+		//Slide the rows around when the row is clicked
+		(function(){		
 			var slideSpeed = 500;
 		
 			//When a cell is clicked	
@@ -551,13 +557,18 @@ $(document).ready(function(){
 
 				//Get the current link
 				var link = $(this);
-				var row = link.attr('class').split('row-')[1].replace(' highlighted','');
+				
+				//Get the row
+				var row = link.attr('data-row');
 			
+				//Get the hidden row
 				var previouslyHidden = $('.under-profile-buttons-source > div:not(:visible)');
 			
 				//Hide the row we clicked
+				$('.row-'+row).slideUp(slideSpeed,function(){
+
+				});
 				previouslyHidden.slideDown(slideSpeed);
-				$('.row-'+row).slideUp(slideSpeed);
 
 			});
 		})();

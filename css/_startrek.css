@@ -125,8 +125,8 @@ a{
 .under-profile-buttons-source > div{
 	float:left;
 	text-align:right;
-	padding: 2px 0;
 	color:#FE9800;
+	line-height: 1.5;
 }
 
 #top-section-content h1 div{
