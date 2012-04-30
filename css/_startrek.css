@@ -57,7 +57,13 @@ a{
 #bottom-section-content{
 	margin-top: 65px;
 	color:#fe9800;
+	min-height: 380px;
 }
+
+#bottom-section-content .body-content{
+	min-height: 380px;
+}
+
 
 #top-section-content h1{
 	margin-top:-10px;
@@ -109,12 +115,10 @@ a{
 	background-color:#ee8810;
 }
 
-.under-profile-buttons{
-	clear:both;
-}
-
 .under-profile-buttons-source{
-	display: none;
+	clear: both;
+	margin-left: -20px;
+	margin-right: 7px;
 }
 
 .under-profile-buttons > div,
@@ -302,6 +306,6 @@ a{
 	height: 180px;
 }
 
-.under-profile-buttons > div.highlighted{
+.under-profile-buttons-source div.highlighted{
 	color:#F8FBDB;
 }

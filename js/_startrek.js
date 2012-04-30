@@ -370,7 +370,7 @@ $(document).ready(function(){
 		
 		federation.css(
 			'margin-top',
-			((federation.parent().height() / 2) - (federation.height() / 2)) + 'px'
+			((federation.parent().height() / 2) - (federation.height() / 3)) + 'px'
 		);
 		
 		//Hide the federation symbol
@@ -392,10 +392,9 @@ $(document).ready(function(){
 	//Make the numbers at the top of the page
 	(function(){
 		
-		var rows = 5;
+		var rows = 6;
 		var cols = 12;
 		var sourceElements = $('.under-profile-buttons-source');
-		var targetElement = $('.under-profile-buttons');
 	
 		//Generate a number for the front end based on the column or row		
 		function generateNumber(row, col){
@@ -413,24 +412,6 @@ $(document).ready(function(){
 			
 			return rand(lowerLimit, upperLimit);
 		}
-		
-		//Run quicksand
-		function runQuicksand(){
-			targetElement.quicksand(
-				sourceElements.find('div'),
-				{
-					duration : 3000,
-					adjustHeight : false,
-					useScaling : false
-				}
-			);
-			
-			targetElement = $('.under-profile-buttons');
-		}
-		
-		
-		//Debug
-		ST_rq = runQuicksand;
 
 		//The initial seed
 		(function(){
@@ -445,7 +426,7 @@ $(document).ready(function(){
 					element.addClass('row-' + i);
 				
 					//Make them float the correct distance
-					element.css('width',Math.floor(100 / cols) + '%');
+					element.css('width',(100 / cols) + '%');
 				
 					//Add something for quicksand
 					element.attr('data-id','number-element-'+ i +'-'+ n);
@@ -457,18 +438,22 @@ $(document).ready(function(){
 					sourceElements.append(element);		
 				}
 			}
+
+			//Hide a random row for later use
+			var hiddenRow = rand(0,rows-1);
+			$('.row-'+hiddenRow).hide();		
+
 		})();
 
-		//Apply quicksand right away with no animation duration
-		targetElement.quicksand(sourceElements.find('div'), { duration : 0 });
-		
-		
+
 		//Change the colors of rows and stuff
 		(function(){
 			
 			var currentActiveRow = 0;
+			var currentActiveCol = 0;
 			var direction = 1;
-			var timeout = 1000;
+			var colDirection = 1;
+			var timeout = 4500;
 			
 			//Get all the target divs
 			var allTargets;
@@ -476,33 +461,40 @@ $(document).ready(function(){
 			function changeRow(){
 				
 				//Keep the target list up to date
-				allTargets = $.merge(
-					targetElement.find('div'),
-					sourceElements.find('div')	
-				);
+				allTargets = sourceElements.find('div');
 			
 				//Get rid of the active class for all elements
 				allTargets.removeClass('highlighted');
 				
 				//Find the row to target
 				currentActiveRow += direction;
+				currentActiveCol += colDirection;
+				
+				if(currentActiveRow == -1)
+					currentActiveRow = rows - 1;
+				
+				if(currentActiveCol == -1)
+					currentActiveCol = cols - 1;
 				
 				//Don't overflow the rows boundary
-				currentActiveRow %= rows; 
+				currentActiveRow %= rows;
+				currentActiveCol %= cols; 
 
 				//Add the class to our target row
 				allTargets.filter('.row-'+currentActiveRow).addClass('highlighted');
+				allTargets.filter('.col-'+currentActiveCol).addClass('highlighted');
 				
 				//Call this function again later
 				setTimeout(changeRow, timeout);
+
+				//Change row directions randomly
+				if(rand(0,7) == 0) direction = rand(0,1);
+				if(rand(0,1) == 0) direction *= -1;
 				
-				if(rand(0,7) == 0){
-					direction = rand(0,1);
-				}
-				
-				if(rand(0,1) == 0){
-					direction *= 1;
-				}
+				//Change col directions randomly
+				if(rand(0,7) == 0) colDirection = rand(0,1);
+				if(rand(0,1) == 0) colDirection *= -1;	
+
 			}
 
 			//Call the function to get the ball rolling			
@@ -513,22 +505,21 @@ $(document).ready(function(){
 		(function(){
 			
 			//Some variables to make it work
-			var cellUpdateFrequency = 3;			
+			var cellUpdateFrequency = 5;			
 			var numberVariance = 100;
-			var updateFrequency = 7000;
-			var cellSwapFrequency = 30;
+			var updateFrequency = 1000;
 			
 			function runNumberUpdates(){
 
 				//Get all the active elements
 				var elements = $('.under-profile-buttons-source > div');
-				
+
 				$.each(elements, function(index, element){
 					
 					//Get the value in the cell
 					var cellValue = parseInt($(element).html());
 					var amountToAdd = 0;
-					
+
 					if(rand(0,cellUpdateFrequency) == 0){
 
 						amountToAdd = (rand(0,1) == 0)
@@ -542,28 +533,34 @@ $(document).ready(function(){
 							$(element).html(cellValue + amountToAdd);
 						},whenToRun);
 					}
-					
-					//Swap some random elements with eachother
-					if(rand(0,cellSwapFrequency) == 0){
-						var swapTo = '.col-'+rand(0,cols-1)+'.row-'+rand(0,rows-1);
-						$(element).swap(swapTo);
-					}
-				
 				});
-				
-				runQuicksand();
-				
+
 				//Make it live to run another day
 				setTimeout(runNumberUpdates,updateFrequency);
-			
 			}
 			
 			runNumberUpdates();
-			
-		
 		})();
 		
+		(function(){
+			
+			var slideSpeed = 500;
 		
+			//When a cell is clicked	
+			$('.under-profile-buttons-source > div').click(function(){
+
+				//Get the current link
+				var link = $(this);
+				var row = link.attr('class').split('row-')[1].replace(' highlighted','');
+			
+				var previouslyHidden = $('.under-profile-buttons-source > div:not(:visible)');
+			
+				//Hide the row we clicked
+				previouslyHidden.slideDown(slideSpeed);
+				$('.row-'+row).slideUp(slideSpeed);
+
+			});
+		})();
 
 	})();
 
