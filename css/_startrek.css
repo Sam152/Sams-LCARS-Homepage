@@ -27,6 +27,7 @@ body{
 *{
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	outline: none;
 }
 
 a{
@@ -50,12 +51,12 @@ a{
 #top-section-content{
 	color:#f8fbdb;
 	height: 181px;
+	min-width: 800px;
 }
 
 #bottom-section-content{
 	margin-top: 65px;
 	color:#fe9800;
-	outline: none;
 }
 
 #top-section-content h1{
@@ -71,12 +72,13 @@ a{
 
 #profile-buttons{
 	float: left;
-	width: 310px;
+	width: 550px;
 	margin: 7px 0 0 24px;
+	height: 169px;
 }
 
 #profile-buttons a{
-	width: 140px;
+	width: 129px;
 	display: block;
 	background-color: #9B98FE;
 	border-radius: 10px;
@@ -105,6 +107,22 @@ a{
 
 #profile-buttons a.button-3:active{
 	background-color:#ee8810;
+}
+
+.under-profile-buttons{
+	clear:both;
+}
+
+.under-profile-buttons-source{
+	display: none;
+}
+
+.under-profile-buttons > div,
+.under-profile-buttons-source > div{
+	float:left;
+	text-align:right;
+	padding: 2px 0;
+	color:#FE9800;
 }
 
 #top-section-content h1 div{
@@ -277,4 +295,13 @@ a{
 	height: 400px;
 	background-image:url(../img/federation.jpg);
 	margin:auto;
+}
+
+#top-number-display{
+	margin-left: 790px;
+	height: 180px;
+}
+
+.under-profile-buttons > div.highlighted{
+	color:#F8FBDB;
 }

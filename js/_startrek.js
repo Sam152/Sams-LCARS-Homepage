@@ -24,7 +24,7 @@ $(document).ready(function(){
 			$('#content').height(body.height());
 			
 			//Fix the height for the bottom content
-			$('#bottom-section-content').height(body.height() - (181 + 65));
+			$('#bottom-section-content, .body-content').height(body.height() - (181 + 65));
 
 		};
 
@@ -339,7 +339,7 @@ $(document).ready(function(){
 		
 		//Run the jQuery plugin
 		function contentScrollbars(){
-			jQuery('#bottom-section-content').jScrollPane(options);
+			$('.body-content').jScrollPane(options);
 		}
 		
 		//Run it when the page load
@@ -386,6 +386,185 @@ $(document).ready(function(){
 			setTimeout(hideFederation, 1000);
 		});
 		
+	})();
+	
+	
+	//Make the numbers at the top of the page
+	(function(){
+		
+		var rows = 5;
+		var cols = 12;
+		var sourceElements = $('.under-profile-buttons-source');
+		var targetElement = $('.under-profile-buttons');
+	
+		//Generate a number for the front end based on the column or row		
+		function generateNumber(row, col){
+			
+			var lowerLimit;
+			var upperLimit;
+			
+			if(row % 2 == 0 && row > 0){
+				lowerLimit = 0;
+				upperLimit = lowerLimit + 140;
+			}else{
+				lowerLimit = 500;
+				upperLimit = lowerLimit + 5000;
+			}
+			
+			return rand(lowerLimit, upperLimit);
+		}
+		
+		//Run quicksand
+		function runQuicksand(){
+			targetElement.quicksand(
+				sourceElements.find('div'),
+				{
+					duration : 3000,
+					adjustHeight : false,
+					useScaling : false
+				}
+			);
+			
+			targetElement = $('.under-profile-buttons');
+		}
+		
+		
+		//Debug
+		ST_rq = runQuicksand;
+
+		//The initial seed
+		(function(){
+			//Loop through the cols and rows
+			for(var i = 0; i < rows; i++){
+				for(var n = 0; n < cols; n++){
+				
+					var element = $('<div>');
+	
+					//Add some classes for styling
+					element.addClass('col-' + n);
+					element.addClass('row-' + i);
+				
+					//Make them float the correct distance
+					element.css('width',Math.floor(100 / cols) + '%');
+				
+					//Add something for quicksand
+					element.attr('data-id','number-element-'+ i +'-'+ n);
+				
+					//Add a nice number to it
+					element.html(generateNumber(i,n));
+				
+					//Add it to our source
+					sourceElements.append(element);		
+				}
+			}
+		})();
+
+		//Apply quicksand right away with no animation duration
+		targetElement.quicksand(sourceElements.find('div'), { duration : 0 });
+		
+		
+		//Change the colors of rows and stuff
+		(function(){
+			
+			var currentActiveRow = 0;
+			var direction = 1;
+			var timeout = 1000;
+			
+			//Get all the target divs
+			var allTargets;
+			
+			function changeRow(){
+				
+				//Keep the target list up to date
+				allTargets = $.merge(
+					targetElement.find('div'),
+					sourceElements.find('div')	
+				);
+			
+				//Get rid of the active class for all elements
+				allTargets.removeClass('highlighted');
+				
+				//Find the row to target
+				currentActiveRow += direction;
+				
+				//Don't overflow the rows boundary
+				currentActiveRow %= rows; 
+
+				//Add the class to our target row
+				allTargets.filter('.row-'+currentActiveRow).addClass('highlighted');
+				
+				//Call this function again later
+				setTimeout(changeRow, timeout);
+				
+				if(rand(0,7) == 0){
+					direction = rand(0,1);
+				}
+				
+				if(rand(0,1) == 0){
+					direction *= 1;
+				}
+			}
+
+			//Call the function to get the ball rolling			
+			changeRow();
+	
+		})();
+		
+		(function(){
+			
+			//Some variables to make it work
+			var cellUpdateFrequency = 3;			
+			var numberVariance = 100;
+			var updateFrequency = 7000;
+			var cellSwapFrequency = 30;
+			
+			function runNumberUpdates(){
+
+				//Get all the active elements
+				var elements = $('.under-profile-buttons-source > div');
+				
+				$.each(elements, function(index, element){
+					
+					//Get the value in the cell
+					var cellValue = parseInt($(element).html());
+					var amountToAdd = 0;
+					
+					if(rand(0,cellUpdateFrequency) == 0){
+
+						amountToAdd = (rand(0,1) == 0)
+							? -1 * numberVariance
+							: numberVariance;
+							
+						//Do it within the next five seconds some time
+						var whenToRun = rand(1000,5000);
+
+						setTimeout(function(){
+							$(element).html(cellValue + amountToAdd);
+						},whenToRun);
+					}
+					
+					//Swap some random elements with eachother
+					if(rand(0,cellSwapFrequency) == 0){
+						var swapTo = '.col-'+rand(0,cols-1)+'.row-'+rand(0,rows-1);
+						$(element).swap(swapTo);
+					}
+				
+				});
+				
+				runQuicksand();
+				
+				//Make it live to run another day
+				setTimeout(runNumberUpdates,updateFrequency);
+			
+			}
+			
+			runNumberUpdates();
+			
+		
+		})();
+		
+		
+
 	})();
 
 });
